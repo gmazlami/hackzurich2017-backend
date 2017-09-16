@@ -15,9 +15,6 @@ for (const key in local) {
     }
 }
 
-// Just to demo: That's how to get a sentiment
-require('./services/sentiment').getSentiment("No Man's Sky sucks");
-
 // cors
 app.use(cors())
 
@@ -50,6 +47,7 @@ var server = app.listen(8081, function () {
 
 const productsController = require('./api/products')
 const contractsController = require('./api/contracts')
+const sentimentController = require('./api/sentiment')
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -58,6 +56,7 @@ app.use(bodyParser.json())
 
 router.get('/products/search', productsController.search);
 router.get('/products/:id', productsController.get);
-
+router.post('/sentiments', sentimentController.get);
 router.post('/contracts', contractsController.post);
+
 app.use('/api', router)

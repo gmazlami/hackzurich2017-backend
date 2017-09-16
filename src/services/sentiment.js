@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports.getSentiment = function(text) {
+module.exports.getSentiment = function (text) {
     const NaturalLanguageUnderstandingV1 = require('watson-developer-cloud/natural-language-understanding/v1.js');
 
     const nlu = new NaturalLanguageUnderstandingV1({
@@ -17,12 +17,14 @@ module.exports.getSentiment = function(text) {
         }
     };
 
-    nlu.analyze(options, function(err, res) {
-        if (err) {
-            console.log(err);
-            return err;
-        }
-        console.log(JSON.stringify(res));
-        return res;
-    });
+    return new Promise((resolve, reject) => {
+        nlu.analyze(options, function (err, res) {
+            if (err) {
+                console.log(err);
+                reject(err);
+            }
+            console.log(JSON.stringify(res));
+            resolve(res);
+        });
+    })
 };
