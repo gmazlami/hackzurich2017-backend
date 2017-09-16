@@ -5,6 +5,7 @@ const Contract = require('../models/contract');
 const Tweet = require('../models/tweet');
 const Pushpad = require('../services/pushpad');
 const io = require('../io')
+const _ = require('lodash');
 
 exports.post = (req, res) => {
     var productEan = req.body.productEan;
@@ -54,24 +55,43 @@ exports.get = (req, res) => {
         }
 
         contract = contract.toObject();
+        let avgSentiment = 0;
+        let avgAnger = 0;
+        let avgDisgust = 0;
+        let avgFear = 0;
+        let avgJoy = 0;
+        let avgSadness = 0;
 
-        Tweet.find({ "tag": contract.tag }).sort({"sentiment": -1}).limit(3).exec((err, bestTweets) => {
+        Tweet.find({ "tag": contract.tag }).exec((err, tweets) => {
             if (err) {
                 console.log(err);
                 return res.status(500).send();
             }
 
-            contract.bestTweets = bestTweets;
+            contract.bestTweets = _.slice(tweets, 0, 3);
+            contract.worstTweets = _.slice(_.reverse(tweets), 0, 3);
 
-            Tweet.find({"tag": contract.tag}).sort({"sentiment": 1}).limit(3).exec((err, worstTweets) => {
-                if (err) {
-                    console.log(err);
-                    return res.status(500).send();
-                }
+            let avg = {};
 
-                contract.worstTweets = worstTweets;
-                return res.status(200).json(contract);
-            })
+            _.forEach(tweets, (tweet) => {
+               avg.sentiment += tweet.sentiment;
+               avg.anger += tweet.emotion.anger;
+               avg.disgust += tweet.emotion.disgust;
+               avg.fear += tweet.emotion.fear;
+               avg.joy += tweet.emotion.joy;
+               avg.sadness += tweet.emotion.sadness;
+            });
+
+            avg.sentiment /= tweets.length;
+            avg.anger /= tweets.length;
+            avg.disgust /= tweets.length;
+            avg.fear /= tweets.length;
+            avg.joy /= tweets.length;
+            avg.sadness /= tweets.length;
+
+            contract.avg = avg;
+
+            return res.status(200).json(contract);
 
         });
 
