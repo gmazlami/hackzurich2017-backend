@@ -2,5 +2,5 @@ const mongoose = require('mongoose')
 
 module.exports = () => {
   mongoose.Promise = global.Promise
-  mongoose.connect('mongodb://localhost:27017/hedghehog')
+  mongoose.connect('mongodb://localhost:27017/hedgehog')
 }
