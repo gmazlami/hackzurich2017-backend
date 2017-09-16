@@ -4,13 +4,14 @@ const schema = new mongoose.Schema(
     {
         sentiment: {type: Number},
         emotion: {type: Object},
-        tweets: {type: Array},
+        text: {type: String},
+        tags: {type: Array},
     },
     { 
         timestamps: true 
     }
 )
 
-const model = mongoose.model('Sentiment', schema);
+const model = mongoose.model('Tweet', schema);
 
 module.exports = model;

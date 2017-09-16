@@ -1,6 +1,8 @@
 const Twitter = require('twitter');
 const config = require('./../../local.js');
 const _ = require('lodash');
+const Tweet = require('./../models/tweet');
+const sentimentService = require('./../services/sentiment');
 
 const t = new Twitter({
     consumer_key: config.consumer_key,
@@ -33,7 +35,28 @@ const startStream = () => {
 
     stream.on('data', function (event) {
         console.log(event && event.text);
-        // TODO Do something
+        const tweet = new Tweet();
+        tweet.text = event.text;
+        tweet.tags = [];
+        _.forEach(watchedTags, (tag) => {
+            if (event.text.toLowerCase().indexOf(tag.toLowerCase()) > -1) {
+                tweet.tags.push(tag);
+            }
+        });
+        sentimentService.getSentiment(tweet.text)
+            .then( (response) => {
+                console.log(JSON.stringify(response));
+                tweet.sentiment = response.sentiment.document.score;
+                tweet.emotion = response.emotion.document;
+                return tweet.save()
+            })
+            .then( (response) => {
+                console.log("All good, saved:");
+                console.log(response);
+            })
+            .catch( (error) => {
+                console.log(JSON.stringify(error));
+            });
     });
 
     stream.on('error', function (error) {

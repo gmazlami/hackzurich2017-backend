@@ -1,7 +1,25 @@
 const request = require('request');
 const InsuranceService = require('../services/insurance');
-const DEMO_PRODUCT_EAN = "5030930121822";
-const DEMO_PRODUCT_SENTIMENT = "0.7";
+
+const DEMO_PRODUCTS = {
+    "711719814559":   0.9, // 'no mans sky'
+    "0711719849933":  0.9, // 'no mans sky'
+    "711719849933":   0.9, // 'no mans sky'
+    "5030948116414":  0.0, // 'fifa 17'
+    "5030930121822":  0.0,
+    "5030938116387":  0.0,
+    "5030938116424":  0.0,
+    "5030933116436":  0.0,
+    "5035225116378":  0.0,
+    "5030938116387":  0.0,
+    "5030947116958":  0.0,
+    "5030938116424":  0.0,
+    "5030944116340":  0.0,
+    "5035228116955":  0.0,
+    "5030938116387":  0.0,
+    "5030949116437":  0.0,
+    "5030944116340":  0.0,
+};
 
 const generateRandomSentiment = () => {
   const absoluteVal = Math.random();
@@ -10,8 +28,9 @@ const generateRandomSentiment = () => {
 }
 
 const enrichProduct = (product) => {
-  if (product["ean"] === DEMO_PRODUCT_EAN) {
-    product.sentiment = DEMO_PRODUCT_SENTIMENT;
+  let demoSentiment = DEMO_PRODUCTS[product["ean"]];
+  if (demoSentiment !== undefined) {
+    product.sentiment = demoSentiment;
   } else {
     product.sentiment = generateRandomSentiment();
   }
