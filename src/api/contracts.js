@@ -57,12 +57,14 @@ exports.get = (req, res) => {
         }
 
         contract = contract.toObject();
-        let avgSentiment = 0;
-        let avgAnger = 0;
-        let avgDisgust = 0;
-        let avgFear = 0;
-        let avgJoy = 0;
-        let avgSadness = 0;
+
+        let avg = {};
+        avg.sentiment = 0;
+        avg.anger = 0;
+        avg.disgust = 0;
+        avg.fear = 0;
+        avg.joy = 0;
+        avg.sadness = 0;
 
         // stop watching this now
         TwitterService.unwatchTag(contract.tag);
@@ -75,8 +77,6 @@ exports.get = (req, res) => {
 
             contract.bestTweets = _.slice(tweets, 0, 3);
             contract.worstTweets = _.slice(_.reverse(tweets), 0, 3);
-
-            let avg = {};
 
             _.forEach(tweets, (tweet) => {
                 avg.sentiment += tweet.sentiment;
