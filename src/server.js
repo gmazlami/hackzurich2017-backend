@@ -47,7 +47,7 @@ var server = app.listen(8081, function () {
 
 const productsController = require('./api/products')
 const contractsController = require('./api/contracts')
-const sentimentController = require('./api/sentiment')
+const tweetController = require('./api/tweet')
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -56,7 +56,7 @@ app.use(bodyParser.json())
 
 router.get('/products/search', productsController.search);
 router.get('/products/:id', productsController.get);
-router.post('/sentiments', sentimentController.get);
+router.get('/tweet', tweetController.get);
 router.post('/contracts', contractsController.post);
 
 app.use('/api', router)

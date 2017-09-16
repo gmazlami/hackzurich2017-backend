@@ -20,3 +20,7 @@ exports.post = (req, res) => {
         return res.status(200).json(contract);
     });
 }
+
+exports.getStatus = (req, res) => {
+
+}

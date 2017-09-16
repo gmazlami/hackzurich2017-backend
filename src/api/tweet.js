@@ -2,7 +2,7 @@ const sentimentService = require('./../services/sentiment');
 
 exports.get = (req, res) => {
 
-    const text = req.body.text;
+    const text = req.param('tag');
 
     sentimentService.getSentiment(text)
         .then( (result) => {
