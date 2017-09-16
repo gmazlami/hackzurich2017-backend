@@ -1,0 +1,15 @@
+//Hedge:
+var hedge = {
+   location: {
+    type: [Number], 
+    index: '2dsphere'
+   },
+   sum : Number,
+   startTime: Date,
+   endTime: Date,
+   damage: {
+       operator: String,
+       type: String,
+       threshold: Number
+   }
+}
