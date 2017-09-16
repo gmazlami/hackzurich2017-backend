@@ -37,6 +37,7 @@ const startStream = () => {
         console.log(event && event.text);
         const tweet = new Tweet();
         tweet.text = event.text;
+        tweet.user = event.user;
         tweet.tags = [];
         let foundTag = false;
         _.forEach(watchedTags, (tag) => {

@@ -6,6 +6,7 @@ const schema = new mongoose.Schema(
         emotion: {type: Object},
         text: {type: String},
         tag: {type: String},
+        user: {type: Object}
     },
     {
         timestamps: true 
