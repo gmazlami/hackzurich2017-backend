@@ -7,7 +7,7 @@ const twitter =  require('./services/twitter')
 const router = express.Router()
 const cors = require('cors')
 const local = require('./../local.js');
-var Contract = require('./models/conctract')
+var Contract = require('./models/contract')
 
 for (const key in local) {
     if (local.hasOwnProperty(key)) {
@@ -90,5 +90,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 router.get('/products/search', productsController.search);
+router.get('/products/:id', productsController.get);
+
 router.post('/contracts', contractsController.post);
 app.use('/api', router)

@@ -1,31 +1,49 @@
 const request = require('request');
 
-var DEMO_PRODUCT_EAN = "5030930121822";
-var DEMO_PRODUCT_SENTIMENT = "0.7";
+const DEMO_PRODUCT_EAN = "5030930121822";
+const DEMO_PRODUCT_SENTIMENT = "0.7";
 
+const generateRandomSentiment = () => {
+  const absoluteVal = Math.random();
+  const multiplicator = Math.random() > 0.5 ? -1 : 1;
+  return absoluteVal * multiplicator;
+}
 
-var generateRandomSentiment = () => {
-    var absoluteVal = Math.random();
-    var multiplicator = Math.random() > 0.5 ? -1 : 1;
-    return absoluteVal * multiplicator;
+const enrichProduct = (product) => {
+  if (product["ean"] == DEMO_PRODUCT_EAN) {
+    product["sentiment"] = DEMO_PRODUCT_SENTIMENT;
+  } else {
+    product["sentiment"] = generateRandomSentiment();
+  }
+
+  return product;
+}
+
+exports.get = (req, res) => {
+
+  request('https://api.siroop.ch/product/concretes/sku/' + req.params.id + '?apikey=8ccd66bb1265472cbf8bed4458af4b07', { json: true }, (err, result, body) => {
+    if (err) {
+      console.log(err);
+      return res.status(500);
+    }
+
+    let product = enrichProduct(body)
+    return res.status(200).json(product)
+  });
 }
 
 exports.search = (req, res) => {
   var query = req.query.query;
   var queryText = encodeURIComponent(query);
 
-  request('https://api.siroop.ch/product/search/?query=' + queryText +'&limit=200&category=%2Fmedien-unterhaltung%2Fgames&apikey=8ccd66bb1265472cbf8bed4458af4b07',{ json: true }, (err, result, body) => {
-    if (err) { 
-      console.log(err); 
+  request('https://api.siroop.ch/product/search/?query=' + queryText + '&limit=200&category=%2Fmedien-unterhaltung%2Fgames&apikey=8ccd66bb1265472cbf8bed4458af4b07', { json: true }, (err, result, body) => {
+    if (err) {
+      console.log(err);
       return res.status(500);
     }
-    console.log(body);
-    for(var i = 0; i < body.length ; i++){
-      if (body[i]["ean"] == DEMO_PRODUCT_EAN){
-        body[i]["sentiment"] = DEMO_PRODUCT_SENTIMENT;
-      }else{
-        body[i]["sentiment"] = generateRandomSentiment();
-      }
+    
+    for (var i = 0; i < body.length; i++) {
+      body[i] = enrichProduct(body[i])
     }
 
     return res.status(200).json(body)
