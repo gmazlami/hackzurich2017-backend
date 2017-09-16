@@ -2,12 +2,13 @@ const mongoose = require('mongoose')
 
 const schema = new mongoose.Schema(
     {
-        product: {type: Object},
-        productPrice: {type: Number},
-        insurancePrice: {type: Number},
+        product: { type: Object },
+        productPrice: { type: Number },
+        insurancePrice: { type: Number },
+        tag: { type: String }
     },
-    { 
-        timestamps: true 
+    {
+        timestamps: true
     }
 )
 

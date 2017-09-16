@@ -70,7 +70,7 @@ const startStream = () => {
         console.log('End');
         setTimeout(function () {
             console.log('Recovering... ');
-            startStream();
+            restartStream();
         }, 2500);
     });
 
@@ -86,6 +86,7 @@ const restartStream = () => {
 };
 
 module.exports.watchTag = (tag) => {
+    console.log('watching', tag);
     if (_.indexOf(watchedTags, tag) === -1) {
         watchedTags.push(tag);
         restartStream();
