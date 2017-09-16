@@ -5,8 +5,14 @@
   "main": "index.js",
   "author": "",
   "license": "ISC",
+  "scripts": {
+ 	"start":"nodemon index.js"
+  },
   "dependencies": {
     "express": "^4.15.4",
     "mongoose": "^4.11.11"
+  },
+  "devDependencies": {
+    "nodemon": "^1.12.1"
   }
 }
