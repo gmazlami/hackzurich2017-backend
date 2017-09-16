@@ -2,7 +2,12 @@ const request = require('request');
 const InsuranceService = require('../services/insurance');
 const TwitterService = require('../services/twitter');
 const Contract = require('../models/contract');
+<<<<<<< HEAD
 const Tweet = require('../models/tweet');
+=======
+const Tweet = require('../models/contract');
+const Pushpad = require('../services/pushpad');
+>>>>>>> 9dd1775a9111b393d37c8ce1742fbd84994928bc
 
 exports.post = (req, res) => {
     var productEan = req.body.productEan;
@@ -28,6 +33,13 @@ exports.post = (req, res) => {
             }
             
             TwitterService.watchTag(tag);
+
+            setTimeout(() => {
+                TwitterService.unwatchTag(tag);
+                var notification = Pushpad.createNotification('RELEASE: ' + contract.product.name,'Your insured product was released, and reviews have been analyzed.','http://localhost:4200/voucher/'+contract.product.ean,'');
+                notification.broadcast({},() => {});      
+            }, 5000);
+
             return res.status(201).json(contract);
         })
     });

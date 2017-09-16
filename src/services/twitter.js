@@ -89,6 +89,7 @@ module.exports.watchTag = (tag) => {
     console.log('watching', tag);
     if (_.indexOf(watchedTags, tag) === -1) {
         watchedTags.push(tag);
+        console.log("Watching " + tag + "! Watched tags: " + watchedTags)                
         restartStream();
         return "ok"
     }
@@ -98,8 +99,10 @@ module.exports.watchTag = (tag) => {
 module.exports.unwatchTag = (tag) => {
     if (_.indexOf(watchedTags, tag) > -1) {
         _.pull(watchedTags, tag);
+        console.log("Unwatching " + tag + ". Watched tags: " + watchedTags);        
         restartStream();
         return "ok"
     }
+    
     return "nothing done, not in the watched tags. Currently watched: " + watchedTags;
 };
