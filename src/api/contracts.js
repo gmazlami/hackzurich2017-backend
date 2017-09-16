@@ -15,6 +15,7 @@ exports.post = (req, res) => {
         const contract = Contract();
         contract.insurancePrice = InsuranceService.computeInsurancePrice(body[0].price, productSentiment);
         contract.product = body[0];
+        contract.tag = body[0].name.toLowerCase().replace(/\W/g, '');
         contract.save();
         
         return res.status(200).json(contract);
