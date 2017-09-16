@@ -1,5 +1,6 @@
 const Twitter = require('twitter');
 const config = require('./../../local.js');
+const _ = require('lodash');
 
 const t = new Twitter({
     consumer_key: config.consumer_key,
@@ -8,7 +9,7 @@ const t = new Twitter({
     access_token_secret: config.access_token_secret
 });
 
-const tags = {};
+let watchedTags = [];
 
 let stream = null;
 
@@ -20,10 +21,19 @@ const stopStream = () => {
 };
 
 const startStream = () => {
-   stream = t.stream('statuses/filter', {track: Object.keys(tags), language: 'en'});
 
-    stream.on('data', function(event) {
+    // Check if there is a phrase at all --> prevents error if all are unmonitored
+    if (watchedTags.length === 0) {
+        console.log("No tags...");
+        stopStream();
+        return;
+    }
+
+    stream = t.stream('statuses/filter', {track: watchedTags.join(","), language: 'en'});
+
+    stream.on('data', function (event) {
         console.log(event && event.text);
+        // TODO Do something
     });
 
     stream.on('error', function (error) {
@@ -32,35 +42,38 @@ const startStream = () => {
 
 
     stream.on('end', function () {
-        console.log('Terminated.');
-        setTimeout(function() {
+        console.log('End');
+        setTimeout(function () {
             console.log('Recovering... ');
-            restartStream();
+            startStream();
         }, 2500);
     });
 
 };
 
 const restartStream = () => {
-    stopStream();
-    startStream();
+    console.log("Restarting stream...");
+    if (stream !== null) {
+        stopStream();
+    } else {
+        startStream();
+    }
 };
 
-module.exports.watchTag = (hashtag) => {
-    if (!(hashtag in tags)) {
-        //tags[hashtag] = true;
-        tags[hashtag] = true;
+module.exports.watchTag = (tag) => {
+    if (_.indexOf(watchedTags, tag) === -1) {
+        watchedTags.push(tag);
         restartStream();
         return "ok"
     }
-    return "nothing done"
+    return "nothing done - is already watched. Currently watched: " + watchedTags;
 };
 
-module.exports.unwatchTag = (hashtag) => {
-    if (hashtag in tags) {
-        delete tags[hashtag];
+module.exports.unwatchTag = (tag) => {
+    if (_.indexOf(watchedTags, tag) > -1) {
+        _.pull(watchedTags, tag);
         restartStream();
         return "ok"
     }
-    return "nothing done"
+    return "nothing done, not in the watched tags. Currently watched: " + watchedTags;
 };
