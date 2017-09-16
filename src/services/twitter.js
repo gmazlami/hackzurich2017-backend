@@ -51,7 +51,7 @@ const startStream = () => {
             .then( (response) => {
                 console.log(JSON.stringify(response));
                 tweet.sentiment = response.sentiment.document.score;
-                tweet.emotion = response.emotion.document;
+                tweet.emotion = response.emotion.document.emotion;
                 io.socket().emit('tweet', tweet.toObject())
                 return tweet.save()
             })

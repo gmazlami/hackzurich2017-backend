@@ -69,7 +69,7 @@ exports.get = (req, res) => {
         // stop watching this now
         TwitterService.unwatchTag(contract.tag);
 
-        Tweet.find({ "tag": contract.tag }).exec((err, tweets) => {
+        Tweet.find({ "tag": contract.tag }).sort({sentiment: -1}).exec((err, tweets) => {
             if (err) {
                 console.log(err);
                 return res.status(500).send();
@@ -79,12 +79,12 @@ exports.get = (req, res) => {
             contract.worstTweets = _.slice(_.reverse(tweets), 0, 3);
 
             _.forEach(tweets, (tweet) => {
-                avg.sentiment += tweet.sentiment;
-                avg.anger += tweet.emotion.anger;
-                avg.disgust += tweet.emotion.disgust;
-                avg.fear += tweet.emotion.fear;
-                avg.joy += tweet.emotion.joy;
-                avg.sadness += tweet.emotion.sadness;
+               avg.sentiment += tweet.sentiment;
+               avg.anger += tweet.emotion.anger;
+               avg.disgust += tweet.emotion.disgust;
+               avg.fear += tweet.emotion.fear;
+               avg.joy += tweet.emotion.joy;
+               avg.sadness += tweet.emotion.sadness;
             });
 
             avg.sentiment /= tweets.length;
