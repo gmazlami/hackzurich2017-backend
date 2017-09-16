@@ -4,6 +4,7 @@ const TwitterService = require('../services/twitter');
 const Contract = require('../models/contract');
 const Tweet = require('../models/tweet');
 const Pushpad = require('../services/pushpad');
+const io = require('../io')
 
 exports.post = (req, res) => {
     var productEan = req.body.productEan;
@@ -34,7 +35,7 @@ exports.post = (req, res) => {
                 TwitterService.unwatchTag(tag);
                 var notification = Pushpad.createNotification('RELEASE: ' + contract.product.name,'Your insured product was released, and reviews have been analyzed.','http://localhost:4200/voucher/'+contract.product.ean,'');
                 notification.broadcast({},() => {});      
-            }, 5000);
+            }, 50000);
 
             return res.status(201).json(contract);
         })

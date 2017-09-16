@@ -3,6 +3,7 @@ const config = require('./../../local.js');
 const _ = require('lodash');
 const Tweet = require('./../models/tweet');
 const sentimentService = require('./../services/sentiment');
+const io = require('./../io.js')
 
 const t = new Twitter({
     consumer_key: config.consumer_key,
@@ -51,6 +52,7 @@ const startStream = () => {
                 console.log(JSON.stringify(response));
                 tweet.sentiment = response.sentiment.document.score;
                 tweet.emotion = response.emotion.document;
+                io.socket.emit('tweet', tweet.toObject())
                 return tweet.save()
             })
             .then( (response) => {
