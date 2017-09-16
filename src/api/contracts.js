@@ -15,12 +15,25 @@ exports.post = (req, res) => {
         const contract = Contract();
         contract.insurancePrice = InsuranceService.computeInsurancePrice(body[0].price, productSentiment);
         contract.product = body[0];
+        contract.tag = body[0].name.toLowerCase().replace(/\W/g, '');
         contract.save();
         
         return res.status(200).json(contract);
     });
 }
 
-exports.getStatus = (req, res) => {
 
+exports.get = (req, res) => {
+
+    var id = req.params.id
+
+    Contract.find({"product.ean":id}).limit(1).exec((err, contract) => {
+        if (err) {
+            console.log(err);
+            return res.status(500);
+        }
+
+        console.log(contract);
+        return res.status(200).json(contract);
+    });
 }

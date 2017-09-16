@@ -58,5 +58,6 @@ router.get('/products/search', productsController.search);
 router.get('/products/:id', productsController.get);
 router.get('/tweet', tweetController.get);
 router.post('/contracts', contractsController.post);
+router.get('/contracts/:id', contractsController.get);
 
 app.use('/api', router)
