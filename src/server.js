@@ -1,10 +1,20 @@
 const request = require('request');
-var express = require('express')
-var app = express()
-var mongoose = require('mongoose')
-var twitter =  require('./services/twitter')
+const express = require('express')
+const app = express()
+const mongoose = require('mongoose')
+const twitter =  require('./services/twitter')
 const router = express.Router()
-var cors = require('cors')
+const cors = require('cors')
+const local = require('./../local.js');
+
+for (const key in local) {
+    if (local.hasOwnProperty(key)) {
+        process.env[key] = local[key];
+    }
+}
+
+// Just to demo: That's how to get a sentiment
+require('./services/sentiment').getSentiment("No Man's Sky sucks");
 
 // cors
 app.use(cors())
