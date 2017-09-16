@@ -21,11 +21,12 @@ const enrichProduct = (product) => {
 
 exports.get = (req, res) => {
 
-  request('https://api.siroop.ch/product/concretes/sku/' + req.params.id + '?apikey=8ccd66bb1265472cbf8bed4458af4b07', { json: true }, (err, result, body) => {
+  request('https://api.siroop.ch/product/ean/' + req.params.id + '/?apikey=8ccd66bb1265472cbf8bed4458af4b07', { json: true }, (err, result, body) => {
     if (err) {
       console.log(err);
       return res.status(500);
     }
+    console.log(body);
 
     let product = enrichProduct(body)
     return res.status(200).json(product)
