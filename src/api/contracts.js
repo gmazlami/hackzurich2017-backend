@@ -1,6 +1,7 @@
 const request = require('request');
 const InsuranceService = require('../services/insurance');
 const Contract = require('../models/contract');
+const Tweet = require('../models/contract');
 
 exports.post = (req, res) => {
     var productEan = req.body.productEan;
@@ -25,13 +26,32 @@ exports.post = (req, res) => {
 
 exports.get = (req, res) => {
 
-    var id = req.params.id
+    const id = req.params.id;
 
     Contract.find({"product.ean":id}).limit(1).exec((err, contract) => {
         if (err) {
             console.log(err);
             return res.status(500);
         }
+
+        Tweet.find({"tag": contract.tag}).sort({"sentiment": -1}).limit(3).exec((err, bestTweets) => {
+            if (err) {
+                console.log(err);
+                return res.status(500);
+            }
+
+            contract.bestTweets = bestTweets;
+
+            Tweet.find({"tag": contract.tag}).sort({"sentiment": 1}).limit(3).exec((err, worstTweets) => {
+                if (err) {
+                    console.log(err);
+                    return res.status(500);
+                }
+
+                contract.worstTweets = worstTweets;
+            })
+
+        });
 
         console.log(contract);
         return res.status(200).json(contract);
