@@ -5,9 +5,9 @@ const schema = new mongoose.Schema(
         sentiment: {type: Number},
         emotion: {type: Object},
         text: {type: String},
-        tags: {type: Array},
+        tag: {type: String},
     },
-    { 
+    {
         timestamps: true 
     }
 )

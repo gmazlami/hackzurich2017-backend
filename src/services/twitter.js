@@ -38,9 +38,11 @@ const startStream = () => {
         const tweet = new Tweet();
         tweet.text = event.text;
         tweet.tags = [];
+        let foundTag = false;
         _.forEach(watchedTags, (tag) => {
-            if (event.text.toLowerCase().indexOf(tag.toLowerCase()) > -1) {
-                tweet.tags.push(tag);
+            if (event.text.toLowerCase().indexOf(tag.toLowerCase()) > -1 && !foundTag) {
+                tweet.tag = tag;
+                foundTag = true;
             }
         });
         sentimentService.getSentiment(tweet.text)
