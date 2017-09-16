@@ -20,3 +20,19 @@ exports.post = (req, res) => {
         return res.status(200).json(contract);
     });
 }
+
+
+exports.get = (req, res) => {
+ 
+    var id = req.params.id
+
+    Contract.find({"product.ean":id}).limit(1).exec((err, contract) => {
+        if (err) {
+            console.log(err);
+            return res.status(500);
+        }
+        
+        console.log(contract);
+        return res.status(200).json(contract);
+    });
+}
