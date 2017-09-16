@@ -38,7 +38,7 @@ exports.post = (req, res) => {
                     console.log(err)
                     console.log('broadcasted')
                 });
-            }, 10000);
+            }, 30000);
 
             return res.status(201).json(contract);
         })
