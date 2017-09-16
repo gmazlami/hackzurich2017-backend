@@ -1,24 +1,26 @@
 const Twitter = require('twitter');
+const config = require('./../../local.js');
+
 const t = new Twitter({
-    consumer_key: process.env.consumer_key,
-    consumer_secret: process.env.consumer_secret,
-    access_token_key: process.env.access_token_key,
-    access_token_secret: process.env.access_token_secret
+    consumer_key: config.consumer_key,
+    consumer_secret: config.consumer_secret,
+    access_token_key: config.access_token_key,
+    access_token_secret: config.access_token_secret
 });
 
 const tags = {};
 
-let stream = undefined;
+let stream = null;
 
 const stopStream = () => {
-    if (stream !== undefined) {
+    if (stream !== null) {
         stream.destroy();
         stream = null;
     }
 };
 
 const startStream = () => {
-    stream = t.stream('statuses/filter', {track: Object.keys(tags).join(',')});
+   stream = t.stream('statuses/filter', {track: Object.keys(tags), language: 'en'});
 
     stream.on('data', function(event) {
         console.log(event && event.text);
@@ -41,7 +43,7 @@ const startStream = () => {
 
 const restartStream = () => {
     stopStream();
-    setTimeout( () => startStream(), 2500);
+    startStream();
 };
 
 module.exports.watchTag = (hashtag) => {
