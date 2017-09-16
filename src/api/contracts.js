@@ -13,17 +13,19 @@ exports.post = (req, res) => {
           console.log(err); 
           return res.status(500);
         }
-        var insurancePrice = computeInsurancePrice(body.price, body.sentiment);
-        
-        var contract = Contract({product: body, insurancePrice: insurancePrice, productPrice: body.productPrice});
+        var insurancePrice = computeInsurancePrice(body[0].price, productSentiment);
+        var contract = Contract({});
+        contract.insurancePrice = insurancePrice;
+        contract.product = body;
         contract.save();
-        console.log(contract)
-
         return res.status(200).json(contract);
     });
 }
 
 
 var computeInsurancePrice = (price, sentiment) => {
-    return ((INSURANCE_FORMULA_SLOPE * sentiment + INSURANCE_FORMULA_OFFSET)/100) * price
+    var priceInFrancs = price / 100;
+    var a = INSURANCE_FORMULA_SLOPE * sentiment;
+    var b = a + INSURANCE_FORMULA_OFFSET;
+    return (b/100) * priceInFrancs;
 }
