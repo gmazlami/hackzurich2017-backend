@@ -1,7 +1,10 @@
+const request = require('request');
 var express = require('express')
 var app = express()
 var mongoose = require('mongoose')
 const router = express.Router()
+var cors = require('cors')
+
 
 // db connection
 const db = require('./db')
@@ -21,6 +24,8 @@ var server = app.listen(8081, function () {
 
 const productsController = require('./api/products')
 
-router.get('/products/:id', productsController.get)
+router.get('/products/search', productsController.search);
 
 app.use('/api', router)
+
+app.use(cors())
