@@ -20,7 +20,7 @@ exports.post = (req, res) => {
         let product = body[0];
         let tag = product.name.toLowerCase().replace(/\W/g, '')
 
-        Contract.findOneAndUpdate({ "product.ean": product.ean }, { 
+        Contract.findOneAndUpdate({ "product.ean": product.ean }, {
             insurancePrice: InsuranceService.computeInsurancePrice(body[0].price, productSentiment),
             product: product,
             tag: tag
@@ -29,14 +29,16 @@ exports.post = (req, res) => {
                 console.log(err)
                 return res.status(500).send();
             }
-            
+
             TwitterService.watchTag(tag);
 
             setTimeout(() => {
-                TwitterService.unwatchTag(tag);
-                var notification = Pushpad.createNotification('RELEASE: ' + contract.product.name,'Your insured product was released, and reviews have been analyzed.','http://localhost:4200/voucher/'+contract.product.ean,'');
-                notification.broadcast({},() => {});      
-            }, 50000);
+                var notification = Pushpad.createNotification(('RELEASE: ' + contract.product.name).substr(0, 30), 'Your insured product was released, and reviews have been analyzed.', 'http://localhost:4200/voucher/' + contract.product.ean, contract.product.images.highres);
+                notification.broadcast({}, (err) => {
+                    console.log(err)
+                    console.log('broadcasted')
+                });
+            }, 10000);
 
             return res.status(201).json(contract);
         })
@@ -62,6 +64,9 @@ exports.get = (req, res) => {
         let avgJoy = 0;
         let avgSadness = 0;
 
+        // stop watching this now
+        TwitterService.unwatchTag(contract.tag);
+
         Tweet.find({ "tag": contract.tag }).exec((err, tweets) => {
             if (err) {
                 console.log(err);
@@ -74,12 +79,12 @@ exports.get = (req, res) => {
             let avg = {};
 
             _.forEach(tweets, (tweet) => {
-               avg.sentiment += tweet.sentiment;
-               avg.anger += tweet.emotion.anger;
-               avg.disgust += tweet.emotion.disgust;
-               avg.fear += tweet.emotion.fear;
-               avg.joy += tweet.emotion.joy;
-               avg.sadness += tweet.emotion.sadness;
+                avg.sentiment += tweet.sentiment;
+                avg.anger += tweet.emotion.anger;
+                avg.disgust += tweet.emotion.disgust;
+                avg.fear += tweet.emotion.fear;
+                avg.joy += tweet.emotion.joy;
+                avg.sadness += tweet.emotion.sadness;
             });
 
             avg.sentiment /= tweets.length;

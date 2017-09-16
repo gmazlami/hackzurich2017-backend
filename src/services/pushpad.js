@@ -12,7 +12,6 @@ exports.createNotification = (title, body, targetUrl, imageUrl) => {
         body: body, // max 120 characters
         title: title, // optional, defaults to your project name, max 30 characters
         targetUrl: targetUrl, // optional, defaults to your project website
-        iconUrl: imageUrl, // optional, defaults to the project icon
         imageUrl: imageUrl, // optional, an image to display in the notification content
         ttl: 604800, // optional, drop the notification after this number of seconds if a device is offline
         requireInteraction: true, // optional, prevent Chrome on desktop from automatically closing the notification after a few seconds

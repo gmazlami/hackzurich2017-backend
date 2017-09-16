@@ -57,7 +57,7 @@ exports.search = (req, res) => {
   var query = req.query.query;
   var queryText = encodeURIComponent(query);
 
-  request('https://api.siroop.ch/product/search/?query=' + queryText + '&limit=200&category=%2Fmedien-unterhaltung%2Fgames&apikey=8ccd66bb1265472cbf8bed4458af4b07', { json: true }, (err, result, body) => {
+  request('https://api.siroop.ch/product/search/?query=' + queryText + '&limit=20&category=%2Fmedien-unterhaltung%2Fgames&apikey=8ccd66bb1265472cbf8bed4458af4b07', { json: true }, (err, result, body) => {
     if (err) {
       console.log(err);
       return res.status(500);
