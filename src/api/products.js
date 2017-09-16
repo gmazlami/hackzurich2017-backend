@@ -1,5 +1,5 @@
 const request = require('request');
-
+const InsuranceService = require('../services/insurance');
 const DEMO_PRODUCT_EAN = "5030930121822";
 const DEMO_PRODUCT_SENTIMENT = "0.7";
 
@@ -10,11 +10,13 @@ const generateRandomSentiment = () => {
 }
 
 const enrichProduct = (product) => {
-  if (product["ean"] == DEMO_PRODUCT_EAN) {
-    product["sentiment"] = DEMO_PRODUCT_SENTIMENT;
+  if (product["ean"] === DEMO_PRODUCT_EAN) {
+    product.sentiment = DEMO_PRODUCT_SENTIMENT;
   } else {
-    product["sentiment"] = generateRandomSentiment();
+    product.sentiment = generateRandomSentiment();
   }
+
+  product.insurancePrice = InsuranceService.computeInsurancePrice(product.price, product.sentiment)
 
   return product;
 }
@@ -26,9 +28,8 @@ exports.get = (req, res) => {
       console.log(err);
       return res.status(500);
     }
-    console.log(body);
-
-    let product = enrichProduct(body)
+    
+    let product = enrichProduct(body[0])
     return res.status(200).json(product)
   });
 }
