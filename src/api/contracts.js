@@ -22,6 +22,10 @@ exports.post = (req, res) => {
         contract.save();
 
         TwitterService.watchTag(tag);
+
+        setTimeout(() => {
+            TwitterService.unwatchTag(tag);
+        }, 5000);
         
         return res.status(200).json(contract);
     });
