@@ -6,7 +6,7 @@ var project = new pushpad.Pushpad({
   projectId: '4425'
 });
 
-exports.createNotification = (title, body, targetUrl, imageUrl,) => {
+exports.createNotification = (title, body, targetUrl, imageUrl) => {
     return new pushpad.Notification({
         project: project,
         body: body, // max 120 characters
@@ -19,3 +19,8 @@ exports.createNotification = (title, body, targetUrl, imageUrl,) => {
         starred: true // optional, bookmark the notification in the Pushpad dashboard (e.g. to highlight manual notifications)
     });
 }
+
+
+//example
+// var pushpad = require(...)
+// var n = pushpad.createNotification('testnotification','testbody','http://localhost4200','');
